@@ -23,26 +23,19 @@ namespace Bev.IO.Gpib.Keithley500Serial
         {
             CheckIeeeAddress(address);
             Send500($"OA;{address.ToString("D2")};{command}");
-            Thread.Sleep(defaultDelay);
         }
-        public void Output(string command)
-        {
-            Send500($"O;{command}");
-            Thread.Sleep(defaultDelay);
-        }
+        public void Output(string command) => Send500($"O;{command}");
 
         // Instruction Manual 3-6
         public string Enter(int address)
         {
             CheckIeeeAddress(address);
             Send500($"EN;{address.ToString("D2")}");
-            Thread.Sleep(defaultDelay);
             return Read500();
         }
         public string Enter()
         {
             Send500($"EN");
-            Thread.Sleep(defaultDelay);
             return Read500();
         }
 
@@ -51,51 +44,39 @@ namespace Bev.IO.Gpib.Keithley500Serial
         {
             CheckIeeeAddress(address);
             Send500($"TR;{address.ToString("D2")}");
-            Thread.Sleep(defaultDelay);
         }
-        public void Trigger()
-        {
-            Send500($"TR");
-            Thread.Sleep(defaultDelay);
-        }
+        public void Trigger() => Send500($"TR");
 
         // Instruction Manual 3-14
-        public void Escape() => Send500($"{(char)1}");
+        public void Escape() => Send500($"{(char)1}", noDelay);
 
         // Instruction Manual 3-3
-        public void DeviceClear() => Send500("C");
+        public void DeviceClear() => Send500("C", noDelay);
 
         // Instruction Manual 3-8
         public void Local(int address)
         {
             CheckIeeeAddress(address);
             Send500($"L;{address.ToString("D2")}");
-            Thread.Sleep(defaultDelay);
         }
-        public void Local()
-        {
-            Send500($"L");
-            Thread.Sleep(defaultDelay);
-        }
+        public void Local() => Send500($"L");
 
         // Instruction Manual 3-10
         public void Remote(int address)
         {
             CheckIeeeAddress(address);
             Send500($"RE;{address.ToString("D2")}");
-            Thread.Sleep(defaultDelay);
         }
-        public void Remote()
-        {
-            Send500($"RE");
-            Thread.Sleep(defaultDelay);
-        }
+        public void Remote() => Send500($"RE");
 
-        private void Send500(string command)
+        private void Send500(string command) => Send500(command, defaultDelay);
+
+        private void Send500(string command, int delay)
         {
             try
             {
                 comPort.WriteLine(command);
+                Thread.Sleep(delay);
             }
             catch (TimeoutException)
             {
@@ -190,5 +171,6 @@ namespace Bev.IO.Gpib.Keithley500Serial
         private readonly SerialPort comPort;
         private const int defaultDelay = 100;   // in ms
         private const int hugeDelay = 5000;     // in ms
+        private const int noDelay = 0;          // no delay at all
     }
 }
