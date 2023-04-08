@@ -18,6 +18,7 @@ namespace Bev.IO.Gpib.Keithley500Serial
             TogglePower(); // this is essential!
             Initialize();
         }
+
         // Instruction Manual 3-9
         public void Output(int address, string command)
         {
@@ -35,7 +36,7 @@ namespace Bev.IO.Gpib.Keithley500Serial
         }
         public string Enter()
         {
-            Send500($"EN");
+            Send500("EN");
             return Read500();
         }
 
@@ -45,10 +46,19 @@ namespace Bev.IO.Gpib.Keithley500Serial
             CheckIeeeAddress(address);
             Send500($"TR;{address.ToString("D2")}");
         }
-        public void Trigger() => Send500($"TR");
+        public void Trigger() => Send500("TR");
 
         // Instruction Manual 3-14
         public void Escape() => Send500($"{(char)1}", noDelay);
+
+        // Instruction Manual 3-4
+        public void SelectiveDeviceClear(int address) => DeviceClear(address);
+
+        public void DeviceClear(int address)
+        {
+            CheckIeeeAddress(address);
+            Send500($"C;{address.ToString("D2")}");
+        }
 
         // Instruction Manual 3-3
         public void DeviceClear() => Send500("C", noDelay);
@@ -59,7 +69,7 @@ namespace Bev.IO.Gpib.Keithley500Serial
             CheckIeeeAddress(address);
             Send500($"L;{address.ToString("D2")}");
         }
-        public void Local() => Send500($"L");
+        public void Local() => Send500("L");
 
         // Instruction Manual 3-10
         public void Remote(int address)
@@ -67,7 +77,62 @@ namespace Bev.IO.Gpib.Keithley500Serial
             CheckIeeeAddress(address);
             Send500($"RE;{address.ToString("D2")}");
         }
-        public void Remote() => Send500($"RE");
+        public void Remote() => Send500("RE");
+
+        // Instruction Manual 3-11
+        public string SerialPoll(int address)
+        {
+            CheckIeeeAddress(address);
+            Send500($"SP;{address.ToString("D2")}");
+            return Read500();
+        }
+
+        // Instruction Manual 3-11
+        public string SrqCheck()
+        {
+            Send500($"SQ");
+            return Read500();
+        }
+
+        // Instruction Manual 3-10
+        public void Resume() => Send500("RS", noDelay);
+
+        // Instruction Manual 3-8
+        public void LocalLockout() => Send500("LL", noDelay);
+
+        // Instruction Manual 3-3
+        public void Abort() => Send500("A", noDelay);
+
+        // Instruction Manual 3-15
+        public void Attention() => Send500("/A", noDelay);
+
+        // Instruction Manual 3-16
+        public void MyListenAddress() => Send500("/ML", noDelay);
+
+        // Instruction Manual 3-16
+        public void MyTalkAddress() => Send500("/MT", noDelay);
+
+        // Instruction Manual 3-17
+        public void UnListen() => Send500("/UL", noDelay);
+
+        // Instruction Manual 3-17
+        public void UnTalk() => Send500("/UT", noDelay);
+
+        // Instruction Manual 3-15
+        public void Listen(int address)
+        {
+            CheckIeeeAddress(address);
+            Send500($"/L;{address.ToString("D2")}", noDelay);
+        }
+
+        // Instruction Manual 3-17
+        public void Talk(int address)
+        {
+            CheckIeeeAddress(address);
+            Send500($"/T;{address.ToString("D2")}", noDelay);
+        }
+
+
 
         private void Send500(string command) => Send500(command, defaultDelay);
 
@@ -80,7 +145,7 @@ namespace Bev.IO.Gpib.Keithley500Serial
             }
             catch (TimeoutException)
             {
-                Console.WriteLine(">w-timeout<");
+                Console.WriteLine(">write timeout<");
                 ClosePort();
                 Initialize();
             }
@@ -92,13 +157,12 @@ namespace Bev.IO.Gpib.Keithley500Serial
             {
                 char[] buffer = new char[512];
                 comPort.Read(buffer, 0, buffer.Length);
-                //DebugOut(buffer);
                 char[] charsToTrim = { (char)0, '\r', '\n' };
                 return new string(buffer).TrimEnd(charsToTrim);
             }
             catch (TimeoutException)
             {
-                Console.WriteLine(">r-timeout<");
+                Console.WriteLine(">read timeout<");
                 ClosePort();
                 Initialize();
                 return string.Empty;
@@ -117,7 +181,7 @@ namespace Bev.IO.Gpib.Keithley500Serial
         {
             OpenPort();
             // TogglePower();
-            // send five carriage returns separated by a 0.1 s delay
+            // send five carriage returns separated by a 0.1 s delay (=defaultDelay)
             // to allow the 500-SERIAL to adjust its baud rate
             Send500("");
             Send500("");
