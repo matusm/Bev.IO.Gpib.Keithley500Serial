@@ -116,28 +116,22 @@ namespace Bev.IO.Gpib.Keithley500Serial
         private void Initialize()
         {
             OpenPort();
-            //TogglePower();
+            // TogglePower();
             // send five carriage returns separated by a 0.1 s delay
             // to allow the 500-SERIAL to adjust its baud rate
             Send500("");
-            Thread.Sleep(defaultDelay);
             Send500("");
-            Thread.Sleep(defaultDelay);
             Send500("");
-            Thread.Sleep(defaultDelay);
             Send500("");
-            Thread.Sleep(defaultDelay);
             Send500("");
-            Thread.Sleep(defaultDelay);
-            Send500("I");       // INIT command
-            Send500("EC;0");    // turn echo off
-            Send500("H;1");     // turn on hardware handshake
-            Send500("X;0");     // turn off XON/XOFF handshake
-            Send500("TC;2");    // set serial terminator to CR
-            Send500("TB;4");    // set bus terminator to CRLF
-            Thread.Sleep(defaultDelay); // provide time for the port receive buffer to fill
-            Read500();          // clear buffer
-            DeviceClear();      // (Device Clear) to clear the GPIB bus
+            Send500("I", noDelay);      // INIT command
+            Send500("EC;0", noDelay);   // turn echo off
+            Send500("H;1", noDelay);    // turn on hardware handshake
+            Send500("X;0", noDelay);    // turn off XON/XOFF handshake
+            Send500("TC;2", noDelay);   // set serial terminator to CR
+            Send500("TB;4");            // set bus terminator to CRLF
+            Read500();                  // clear buffer
+            DeviceClear();              // (Device Clear) to clear the GPIB bus
         }
 
         private void OpenPort()
