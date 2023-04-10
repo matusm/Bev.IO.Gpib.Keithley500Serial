@@ -193,7 +193,7 @@ namespace Bev.IO.Gpib.Keithley500Serial
             Send500("H;1", noDelay);    // turn on hardware handshake
             Send500("X;0", noDelay);    // turn off XON/XOFF handshake
             Send500("TC;2", noDelay);   // set serial terminator to CR
-            Send500("TB;4");            // set bus terminator to CRLF
+            Send500("TB;4");            // set bus terminator to CR+LF
             Read500();                  // clear buffer
             DeviceClear();              // (Device Clear) to clear the GPIB bus
         }
