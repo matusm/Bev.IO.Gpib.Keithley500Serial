@@ -146,8 +146,6 @@ namespace Bev.IO.Gpib.Keithley500Serial
             catch (TimeoutException)
             {
                 Console.WriteLine(">write timeout<");
-                ClosePort();
-                Initialize();
             }
         }
 
@@ -163,8 +161,6 @@ namespace Bev.IO.Gpib.Keithley500Serial
             catch (TimeoutException)
             {
                 Console.WriteLine(">read timeout<");
-                ClosePort();
-                Initialize();
                 return string.Empty;
             }
         }

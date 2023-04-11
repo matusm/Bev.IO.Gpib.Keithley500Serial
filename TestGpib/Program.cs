@@ -13,7 +13,7 @@ namespace TestGpib
         {
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
 
-            int gpibAddress = 3;
+            int gpibAddress = 11;
             string port = "COM1";
 
             Console.WriteLine("initializing ...");
@@ -47,14 +47,37 @@ namespace TestGpib
                 Console.WriteLine($"'{command}' -> '{response}'");
             }
 
-            gpib.Remote(gpibAddress);
-            Thread.Sleep(200);
+            //gpib.Remote(gpibAddress);
+            //Thread.Sleep(200);
+
+            for (int i = 1; i < 31; i++)
+            {
+                //Console.WriteLine("initializing ...");
+                //gpib = new Keithley500Serial(port);
+                //Console.WriteLine("done");
+
+                gpibAddress = i;
+                Console.WriteLine($"Address: {gpibAddress:D2}");
+
+
+                Debug(" ", 200); // should be *
+
+                char[] buff = { 'O', '0', '0', '0', (char)0 };
+                string startMain = new string(buff);
+                Debug(startMain, 500); // should be *
+
+                Debug("z", 0); // main version
+
+                Console.WriteLine("===============================================================");
+            }
+
+            return;
 
             Debug(" ", 200); // should be *
 
-            char[] buff = {'O', '0', '0', '0' , (char)0};
-            string startMain = new string(buff);
-            Debug(startMain, 500); // should be *
+            //char[] buff = {'O', '0', '0', '0' , (char)0};
+            //string startMain = new string(buff);
+            //Debug(startMain, 500); // should be *
 
             Debug("z", 0); // main version
             
