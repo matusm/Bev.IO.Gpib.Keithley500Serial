@@ -1,11 +1,11 @@
-﻿using Bev.IO.Gpib;
+﻿using Bev.IO.RemoteInterface;
 using System;
 using System.IO.Ports;
 using System.Threading;
 
 namespace Bev.IO.Gpib.Keithley500Serial
 {
-    public class Keithley500Serial : IGpibHandler
+    public class Keithley500Serial : IRemoteInterface
     {
         public Keithley500Serial(string portName)
         {

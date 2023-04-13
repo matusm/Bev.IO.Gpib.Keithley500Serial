@@ -1,5 +1,5 @@
 ﻿using Bev.IO.Gpib.Keithley500Serial;
-using Bev.IO.Gpib;
+using Bev.IO.RemoteInterface;
 using System;
 using System.Globalization;
 using System.Threading;
