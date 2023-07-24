@@ -1,7 +1,7 @@
-﻿using Bev.IO.RemoteInterface;
-using System;
+﻿using System;
 using System.IO.Ports;
 using System.Threading;
+using Bev.IO.RemoteInterface;
 
 namespace Bev.IO.Gpib.Keithley500Serial
 {
@@ -22,7 +22,7 @@ namespace Bev.IO.Gpib.Keithley500Serial
         // Instruction Manual 3-9
         public void Output(int address, string command)
         {
-            CheckIeeeAddress(address);
+            CheckIfAddressInRange(address);
             Send500($"OA;{address.ToString("D2")};{command}");
         }
         public void Output(string command) => Send500($"O;{command}");
@@ -30,7 +30,7 @@ namespace Bev.IO.Gpib.Keithley500Serial
         // Instruction Manual 3-6
         public string Enter(int address)
         {
-            CheckIeeeAddress(address);
+            CheckIfAddressInRange(address);
             Send500($"EN;{address.ToString("D2")}");
             return Read500();
         }
@@ -43,7 +43,7 @@ namespace Bev.IO.Gpib.Keithley500Serial
         // Instruction Manual 3-13
         public void Trigger(int address)
         {
-            CheckIeeeAddress(address);
+            CheckIfAddressInRange(address);
             Send500($"TR;{address.ToString("D2")}");
         }
         public void Trigger() => Send500("TR");
@@ -56,7 +56,7 @@ namespace Bev.IO.Gpib.Keithley500Serial
 
         public void DeviceClear(int address)
         {
-            CheckIeeeAddress(address);
+            CheckIfAddressInRange(address);
             Send500($"C;{address.ToString("D2")}");
         }
 
@@ -66,7 +66,7 @@ namespace Bev.IO.Gpib.Keithley500Serial
         // Instruction Manual 3-8
         public void Local(int address)
         {
-            CheckIeeeAddress(address);
+            CheckIfAddressInRange(address);
             Send500($"L;{address.ToString("D2")}");
         }
         public void Local() => Send500("L");
@@ -74,7 +74,7 @@ namespace Bev.IO.Gpib.Keithley500Serial
         // Instruction Manual 3-10
         public void Remote(int address)
         {
-            CheckIeeeAddress(address);
+            CheckIfAddressInRange(address);
             Send500($"RE;{address.ToString("D2")}");
         }
         public void Remote() => Send500("RE");
@@ -82,7 +82,7 @@ namespace Bev.IO.Gpib.Keithley500Serial
         // Instruction Manual 3-11
         public string SerialPoll(int address)
         {
-            CheckIeeeAddress(address);
+            CheckIfAddressInRange(address);
             Send500($"SP;{address.ToString("D2")}");
             return Read500();
         }
@@ -121,18 +121,16 @@ namespace Bev.IO.Gpib.Keithley500Serial
         // Instruction Manual 3-15
         public void Listen(int address)
         {
-            CheckIeeeAddress(address);
+            CheckIfAddressInRange(address);
             Send500($"/L;{address.ToString("D2")}", noDelay);
         }
 
         // Instruction Manual 3-17
         public void Talk(int address)
         {
-            CheckIeeeAddress(address);
+            CheckIfAddressInRange(address);
             Send500($"/T;{address.ToString("D2")}", noDelay);
         }
-
-
 
         private void Send500(string command) => Send500(command, defaultDelay);
 
@@ -216,10 +214,10 @@ namespace Bev.IO.Gpib.Keithley500Serial
             { }
         }
 
-        private void CheckIeeeAddress(int address)
+        private void CheckIfAddressInRange(int address)
         {
-            if (address < 0) throw new ArgumentException("IEEE 488 address cannot be negative");
-            if (address > 31) throw new ArgumentException("IEEE 488 address cannot be larger than 31");
+            if (address < 0) throw new ArgumentOutOfRangeException("IEEE 488 address cannot be negative");
+            if (address > 31) throw new ArgumentOutOfRangeException("IEEE 488 address cannot be larger than 31");
         }
 
         private readonly SerialPort comPort;

@@ -50,26 +50,24 @@ namespace TestGpib
             //gpib.Remote(gpibAddress);
             //Thread.Sleep(200);
 
-            for (int i = 1; i < 31; i++)
-            {
-                //Console.WriteLine("initializing ...");
-                //gpib = new Keithley500Serial(port);
-                //Console.WriteLine("done");
-
-                gpibAddress = i;
-                Console.WriteLine($"Address: {gpibAddress:D2}");
+            //Console.WriteLine("initializing ...");
+            //gpib = new Keithley500Serial(port);
+            //Console.WriteLine("done");
 
 
-                Debug(" ", 200); // should be *
+            Console.WriteLine($"Address: {gpibAddress:D2}");
 
-                char[] buff = { 'O', '0', '0', '0', (char)0 };
-                string startMain = new string(buff);
-                Debug(startMain, 500); // should be *
 
-                Debug("z", 0); // main version
+            Debug(" ", 200); // should be *
 
-                Console.WriteLine("===============================================================");
-            }
+            char[] buff = { 'O', '0', '0', '0', (char)0 };
+            string startMain = new string(buff);
+            Debug(startMain, 500); // should be *
+
+            Debug("z", 0); // main version
+
+            Console.WriteLine("===============================================================");
+
 
             return;
 
@@ -80,7 +78,7 @@ namespace TestGpib
             //Debug(startMain, 500); // should be *
 
             Debug("z", 0); // main version
-            
+
             Debug("y", 0); // boot version
 
             Debug("A", 100_000); // motor init
